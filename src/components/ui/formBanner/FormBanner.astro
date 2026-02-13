@@ -1,0 +1,115 @@
+---
+import Input from '../input/Input.astro';
+import Button from '../button/Button.astro';
+import { ButtonVariant, ButtonSubvariant, ButtonType } from '../utils/enums';
+
+import { getLocaleFromUrl, createTranslator } from '../../../i18n/utils';
+import { TRANSLATION_KEYS } from '../../../constants/index.js';
+import type { TranslationField } from '../../../i18n/types';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+
+const dataSuccessMessage = t(TRANSLATION_KEYS.WELCOME_BLOG_FORM_SUCCESS);
+const dataErrorMessage = t(TRANSLATION_KEYS.WELCOME_BLOG_FORM_ERROR);
+
+const formTitle = t(TRANSLATION_KEYS.WELCOME_BLOG_FORM_TITLE);
+const formAria = t(TRANSLATION_KEYS.WELCOME_BLOG_FORM_ARIA_LABEL);
+const buttonText = t(TRANSLATION_KEYS.WELCOME_BLOG_FORM_BUTTON_TEXT);
+
+const rawFields = t(TRANSLATION_KEYS.WELCOME_BLOG_FORM_FIELDS);
+
+const formFieldsArray: TranslationField[] = Array.isArray(rawFields)
+  ? (rawFields as TranslationField[])
+  : [];
+---
+
+<div class=`form-banner`>
+  <div class="form-banner__content">
+    <div>
+      <h3 class="form-banner__title">
+        {formTitle}
+      </h3>
+    </div>
+    <div>
+      <form
+        novalidate
+        id="ctaForm"
+        action="submit"
+        class="form-banner__form"
+        aria-label={formAria}
+        data-success-message={dataSuccessMessage}
+        data-error-message={dataErrorMessage}
+      >
+        {
+          formFieldsArray.map((field: TranslationField) => (
+            <Input
+              class="input-container"
+              label={field.label}
+              id={field.name}
+              name={field.name}
+              type={field.type as 'text' | 'email' | 'password'}
+              placeholder={field.placeholder}
+              required={field.required}
+              errorMessage={field.errorMessage}
+            />
+          ))
+        }
+
+        <Button
+          variant={ButtonVariant.Primary}
+          subvariant={ButtonSubvariant.Tonal}
+          type={ButtonType.Submit}
+        >
+          {buttonText}
+        </Button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script is:inline type="module" src="/src/scripts/formValidator.ts"></script>
+<script is:inline type="module">
+  import {
+    validateField,
+    updateUI,
+  } from '/src/components/ui/utils/formFieldUtils.ts';
+
+  const form = document.getElementById('ctaForm');
+  const formFields = form.querySelectorAll('input, textarea');
+
+  const successMessage = form.dataset.successMessage;
+  const errorMessage = form.dataset.errorMessage;
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    let formIsValid = true;
+    formFields.forEach((field) => {
+      const fieldState = {
+        value: field.value,
+        touched: true,
+        error: false,
+      };
+
+      const hasError = validateField(field);
+
+      updateUI(field, fieldState, hasError);
+
+      if (hasError) {
+        formIsValid = false;
+      }
+    });
+
+    if (formIsValid) {
+      alert(successMessage);
+      form.reset();
+    } else {
+      alert(errorMessage);
+    }
+  });
+</script>
+
+<style>
+  @import './FormBanner.css';
+</style>

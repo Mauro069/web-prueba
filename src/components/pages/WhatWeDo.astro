@@ -1,0 +1,20 @@
+---
+import { getLocaleFromUrl, createTranslator } from '../../i18n/utils.js';
+import { TRANSLATION_KEYS } from '../../constants/index.js';
+import Card from '../ui/card/Card.astro';
+import CardHeader from '../ui/card/CardHeader.astro';
+import CardContent from '../ui/card/CardContent.astro';
+import CardFooter from '../ui/card/CardFooter.astro';
+import Button from '../ui/button/Button.astro';
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+---
+
+<div class="text-center">
+  <h1 class="text-3xl font-bold underline mb-4">
+    {t(TRANSLATION_KEYS.WHAT_WE_DO_TITLE)}
+  </h1>
+  <p class="text-lg text-gray-600">
+    {t(TRANSLATION_KEYS.WHAT_WE_DO_DESCRIPTION)}
+  </p>
+</div>

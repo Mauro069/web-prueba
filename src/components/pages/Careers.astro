@@ -1,0 +1,16 @@
+---
+import { getLocaleFromUrl, createTranslator } from '../../i18n/utils.js';
+import { TRANSLATION_KEYS } from '../../constants/index.js';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+---
+
+<div class="text-center">
+  <h1 class="text-3xl font-bold underline mb-4">
+    {t(TRANSLATION_KEYS.CAREERS_TITLE)}
+  </h1>
+  <p class="text-lg text-gray-600">
+    {t(TRANSLATION_KEYS.CAREERS_DESCRIPTION)}
+  </p>
+</div> 

@@ -1,0 +1,22 @@
+export const welcomeConstants = {
+  WELCOME_TITLE: 'welcome.title',
+  WELCOME_DESCRIPTION: 'welcome.description',
+  WELCOME_HERO_SECTION_TITLE: 'welcome.heroSection.title',
+  WELCOME_HERO_SECTION_SUBTITLE: 'welcome.heroSection.subtitle',
+  WELCOME_HERO_SECTION_BTN_TEXT: 'welcome.heroSection.btn.text',
+  WELCOME_HERO_SECTION_BANNER_DESCRIPTION:
+    'welcome.heroSection.banner.description',
+  WELCOME_HERO_BANNER_BTN_TEXT: 'welcome.heroSection.banner.btn.text',
+  WELCOME_PORTFOLIO_LABEL: 'welcome.portfolio.label',
+  WELCOME_PORTFOLIO_TITLE: 'welcome.portfolio.title',
+  WELCOME_PORTFOLIO_SUBTITLE: 'welcome.portfolio.subtitle',
+  WELCOME_PORTFOLIO_PROJECTS: 'welcome.portfolio.projects',
+  WELCOME_OUR_CLIENTS_MAIN_TITLE: 'welcome.ourClients.maintitle',
+  WELCOME_OUR_CLIENTS_MAIN_SUBTITLE: 'welcome.ourClients.subtitle',
+  WELCOME_BLOG_FORM_TITLE: 'welcome.blog.form.title',
+  WELCOME_BLOG_FORM_ARIA_LABEL: 'welcome.blog.form.ariaLabel',
+  WELCOME_BLOG_FORM_SUCCESS: 'welcome.blog.form.success',
+  WELCOME_BLOG_FORM_ERROR: 'welcome.blog.form.error',
+  WELCOME_BLOG_FORM_FIELDS: 'welcome.blog.form.fields',
+  WELCOME_BLOG_FORM_BUTTON_TEXT: 'welcome.blog.form.button.text',
+};

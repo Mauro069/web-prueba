@@ -1,0 +1,49 @@
+---
+import BlogPost from '../../../components/blog/BlogPost.astro';
+import Layout from '../../../layouts/Layout.astro';
+import { getPostSlugs, getPostBySlug } from '../../../data/blog.js';
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE, isValidLocale, type Locale } from '../../../constants/index.js';
+
+// Generar rutas estáticas para todos los posts en todos los idiomas
+export async function getStaticPaths() {
+  const slugs = getPostSlugs();
+  const locales = AVAILABLE_LOCALES.filter(locale => locale !== DEFAULT_LOCALE);
+  
+  const paths = [];
+  
+  for (const locale of locales) {
+    for (const slug of slugs) {
+      paths.push({
+        params: { locale, slug },
+        props: { locale, slug }
+      });
+    }
+  }
+  
+  return paths;
+}
+
+// Obtener params de la URL
+const { locale, slug } = Astro.params;
+
+// Validar locale
+if (!isValidLocale(locale)) {
+  throw new Error(`Idioma no válido: ${locale}`);
+}
+
+// Verificar que el post existe
+const post = getPostBySlug(slug, locale as Locale);
+if (!post) {
+  throw new Error(`Post no encontrado: ${slug} para idioma: ${locale}`);
+}
+
+// Props para el layout
+const layoutProps = {
+  title: `${post.title} - Blog - Codescript`,
+  description: post.excerpt
+};
+---
+
+<Layout {...layoutProps}>
+  <BlogPost slug={slug} />
+</Layout> 

@@ -1,0 +1,207 @@
+---
+import CodescriptSvg from '../../../assets/icons/Codescript.svg';
+import PhoneSvg from '../../../assets/footer/phone.svg';
+import MailSvg from '../../../assets/footer/mail.svg';
+import locationSvg from '../../../assets/footer/location.svg';
+
+import LinkedinSvg from '../../../assets/footer/linkedin.svg';
+import InstagramSvg from '../../../assets/footer/instagram.svg';
+import FacebookSvg from '../../../assets/footer/facebook.svg';
+import YoutubeSvg from '../../../assets/footer/youtube.svg';
+import { getLocaleFromUrl, createTranslator } from '../../../i18n/utils';
+import { PAGES, TRANSLATION_KEYS } from '../../../constants/index.js';
+import Input from '../input/Input.astro';
+import Button from '../button/Button.astro';
+import { ButtonSubvariant, ButtonType, ButtonVariant } from '../utils/enums';
+import { getNavUrl } from '../utils/getNavUrl';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+
+const whatWeDo = t(TRANSLATION_KEYS.NAV_WHAT_WE_DO);
+const about = t(TRANSLATION_KEYS.NAV_ABOUT);
+const portfolio = t(TRANSLATION_KEYS.NAV_PORTFOLIO);
+const blog = t(TRANSLATION_KEYS.NAV_BLOG);
+const carrers = t(TRANSLATION_KEYS.NAV_CAREERS);
+
+const navLinks = [
+  { links: whatWeDo, navUrl: getNavUrl(PAGES.WHAT_WE_DO, currentLocale) },
+  { links: blog, navUrl: getNavUrl(PAGES.BLOG, currentLocale) },
+  { links: about, navUrl: getNavUrl(PAGES.ABOUT, currentLocale) },
+  { links: carrers, navUrl: getNavUrl(PAGES.CAREERS, currentLocale) },
+  { links: portfolio, navUrl: getNavUrl(PAGES.PORTFOLIO, currentLocale) },
+];
+const navLinksGroup1 = navLinks.slice(0, 3);
+const navLinksGroup2 = navLinks.slice(3);
+
+const codescriptInfo = [
+  {
+    icon: locationSvg,
+    info: 'Harju maakond, Tallinn, Lasnamäe linnaosa, Lõõtsa tn 5, 11415, Estonia.',
+  },
+  { icon: PhoneSvg, info: '+34 602 086 382' },
+  { icon: MailSvg, info: 'info@codescript.us' },
+];
+
+const socialMedia = [
+  {
+    icons: LinkedinSvg,
+    href: 'https://www.linkedin.com/company/codescript-us/posts/?feedView=all',
+  },
+  { icons: InstagramSvg, href: 'https://www.instagram.com/codescript.dev/' },
+  {
+    icons: FacebookSvg,
+    href: 'https://www.facebook.com/profile.php?id=61555602626647',
+  },
+  { icons: YoutubeSvg, href: 'https://www.youtube.com/@CodeScript-dev' },
+];
+
+const newLetterTitle = t(TRANSLATION_KEYS.FOOTER_NEWSLETTER);
+const buttonNewsletter = t(TRANSLATION_KEYS.BUTTON_NEWSLETTER);
+const copyright = t(TRANSLATION_KEYS.COPYRIGHT);
+const termsAndConditions = t(TRANSLATION_KEYS.TERMS_CONDITIONS);
+const privacyPolicy = t(TRANSLATION_KEYS.PRIVACY_POLICY);
+const inputPlaceholder = t(TRANSLATION_KEYS.FOOTER_NEWSLETTER_PLACEHOLDER);
+const errorMessage = t(TRANSLATION_KEYS.NEWSLETTER_SUBSCRIPTION_ERROR);
+const successMessage = t(TRANSLATION_KEYS.NEWSLETTER_SUBSCRIPTION_SUCCESS);
+---
+
+<footer class="footer">
+  <div class="footer__header">
+    <CodescriptSvg class="footer__logo" />
+    <form
+      action=""
+      class="footer__newsletter"
+      id="subscriptionForm"
+      novalidate
+      data-error={errorMessage}
+      data-success={successMessage}
+    >
+      <p class="footer__newsletter-title">
+        {newLetterTitle}
+      </p>
+
+      <Input
+        class="footer__newsletter-input max-w-[280px] w-[280px] h-[70px]"
+        label=""
+        name="email-newsletter"
+        id="newsletter"
+        type="email"
+        placeholder={typeof inputPlaceholder === 'string'
+          ? inputPlaceholder
+          : ''}
+        errorMessage={typeof errorMessage === 'string' ? errorMessage : ''}
+      />
+      <Button
+        variant={ButtonVariant.Primary}
+        subvariant={ButtonSubvariant.Tonal}
+        type={ButtonType.Submit}
+        id="btn"
+      >
+        {buttonNewsletter}
+      </Button>
+    </form>
+    <!-- </div> -->
+  </div>
+  <div class="footer__body">
+    <div class="footer__info">
+      <div class="footer__contact">
+        {
+          codescriptInfo.map((code) => (
+            <div class="footer__contact-item">
+              <code.icon class="footer__contact-icon" />
+              <p class="footer__contact-text">{code.info}</p>
+            </div>
+          ))
+        }
+      </div>
+      <div class="footer__nav">
+        <div class="footer__nav-groups">
+          <div class="footer__nav-group">
+            {
+              navLinksGroup1.map((nav) => (
+                <a href={nav.navUrl} class="footer__nav-link">
+                  {nav.links}
+                </a>
+              ))
+            }
+          </div>
+          <div class="footer__nav-group">
+            {
+              navLinksGroup2.map((nav) => (
+                <a href={nav.navUrl} class="footer__nav-link">
+                  {nav.links}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__social">
+    {
+      socialMedia.map((social) => (
+        <a href={social.href} target="_blank">
+          <social.icons />
+        </a>
+      ))
+    }
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copyright">
+      {copyright}
+    </p>
+    <div class="footer__links">
+      <a href="" target="_blank" class="footer__link">{termsAndConditions}</a>
+      <a href="" target="_blank" class="footer__link">{privacyPolicy}</a>
+    </div>
+  </div>
+
+  <style>
+    @import './Footer.css';
+  </style>
+
+  <script is:inline type="module" src="/src/scripts/formValidator.ts"></script>
+  <script is:inline type="module">
+    import {
+      validateField,
+      updateUI,
+    } from '/src/components/ui/utils/formFieldUtils.ts';
+
+    const form = document.getElementById('subscriptionForm');
+    const formFields = form.querySelectorAll('input');
+
+    const successMessage = form.dataset.success;
+    const errorMessage = form.dataset.error;
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      let formIsValid = true;
+      formFields.forEach((field) => {
+        const fieldState = {
+          value: field.value,
+          touched: true,
+          error: false,
+        };
+
+        const hasError = validateField(field);
+
+        updateUI(field, fieldState, hasError);
+
+        if (hasError) {
+          formIsValid = false;
+        }
+      });
+
+      if (formIsValid) {
+        alert(successMessage);
+        form.reset();
+      } else {
+        alert(errorMessage);
+      }
+    });
+  </script>
+</footer>

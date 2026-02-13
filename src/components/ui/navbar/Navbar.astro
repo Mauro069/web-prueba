@@ -1,0 +1,168 @@
+---
+import Codescript from '../../../assets/icons/Codescript.svg';
+import { getLocaleFromUrl, createTranslator } from '../../../i18n/utils';
+import {
+  PAGES,
+  TRANSLATION_KEYS,
+  DEFAULT_LOCALE,
+} from '../../../constants/index.js';
+import SvgOpen from '../../../assets/icons/navbar-icons/hamburguer-menu-open.svg';
+import SvgClose from '../../../assets/icons/navbar-icons/hamburguer-menu-close.svg';
+import Button from '../button/Button.astro';
+import { ButtonSubvariant, ButtonVariant } from '../utils/enums';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+const currentPath = Astro.url.pathname;
+
+const getNavUrl = (page: string) => {
+  return currentLocale === DEFAULT_LOCALE
+    ? page === PAGES.HOME
+      ? '/'
+      : `/${page}`
+    : page === PAGES.HOME
+      ? `/${currentLocale}/`
+      : `/${currentLocale}/${page}`;
+};
+
+const isActive = (page: string) => currentPath === getNavUrl(page);
+---
+
+<header class="w-full justify-center flex">
+  <div class="navbar-container">
+    <a href={getNavUrl(PAGES.HOME)} class="codescript-link">
+      <Codescript class="codescript" />
+    </a>
+
+    <!-- Desktop nav -->
+
+    <nav class="hidden xl:flex items-center nav-desktop">
+      <a
+        href={getNavUrl(PAGES.WHAT_WE_DO)}
+        class:list={{ 'active-link': isActive(PAGES.WHAT_WE_DO) }}
+        >{t(TRANSLATION_KEYS.NAV_WHAT_WE_DO)}</a
+      >
+      <a
+        href={getNavUrl(PAGES.ABOUT)}
+        class:list={{ 'active-link': isActive(PAGES.ABOUT) }}
+        >{t(TRANSLATION_KEYS.NAV_ABOUT)}</a
+      >
+      <a
+        href={getNavUrl(PAGES.PORTFOLIO)}
+        class:list={{ 'active-link': isActive(PAGES.PORTFOLIO) }}
+        >{t(TRANSLATION_KEYS.NAV_PORTFOLIO)}</a
+      >
+      <a
+        href={getNavUrl(PAGES.BLOG)}
+        class:list={{ 'active-link': isActive(PAGES.BLOG) }}
+        >{t(TRANSLATION_KEYS.NAV_BLOG)}</a
+      >
+      <a
+        href={getNavUrl(PAGES.CAREERS)}
+        class:list={{ 'active-link': isActive(PAGES.CAREERS) }}
+        >{t(TRANSLATION_KEYS.NAV_CAREERS)}</a
+      >
+      <Button
+        variant={ButtonVariant.Primary}
+        subvariant={ButtonSubvariant.Tonal}
+      >
+        <a
+          href={getNavUrl(PAGES.CONTACT)}
+          class:list={{ 'active-link': isActive(PAGES.CONTACT) }}
+          >{t(TRANSLATION_KEYS.NAV_CONTACT)}</a
+        >
+      </Button>
+    </nav>
+
+    <!-- Mobile nav -->
+    <div class="navbar-mobile" id="navbar-mobile-container">
+      <button
+        id="hamburger-menu"
+        aria-label="Abrir menú"
+        class="hamburger-trigger xl:hidden"
+      >
+        <div id="hamburger-icon" class="cursor-pointer">
+          <SvgOpen id="hamburger-icon-open" class="active" />
+          <SvgClose id="hamburger-icon-close" class="inactive" />
+        </div>
+      </button>
+
+      <div id="menu-mobile-container" class="menu-mobile-container">
+        <nav class="nav-links-mobile-container">
+          <a
+            href={getNavUrl(PAGES.WHAT_WE_DO)}
+            class:list={{ 'active-link': isActive(PAGES.WHAT_WE_DO) }}
+            >{t(TRANSLATION_KEYS.NAV_WHAT_WE_DO)}</a
+          >
+          <a
+            href={getNavUrl(PAGES.ABOUT)}
+            class:list={{ 'active-link': isActive(PAGES.ABOUT) }}
+            >{t(TRANSLATION_KEYS.NAV_ABOUT)}</a
+          >
+          <a
+            href={getNavUrl(PAGES.PORTFOLIO)}
+            class:list={{ 'active-link': isActive(PAGES.PORTFOLIO) }}
+            >{t(TRANSLATION_KEYS.NAV_PORTFOLIO)}</a
+          >
+          <a
+            href={getNavUrl(PAGES.BLOG)}
+            class:list={{ 'active-link': isActive(PAGES.BLOG) }}
+            >{t(TRANSLATION_KEYS.NAV_BLOG)}</a
+          >
+          <a
+            href={getNavUrl(PAGES.CAREERS)}
+            class:list={{ 'active-link': isActive(PAGES.CAREERS) }}
+            >{t(TRANSLATION_KEYS.NAV_CAREERS)}</a
+          >
+          <Button
+            variant={ButtonVariant.Primary}
+            subvariant={ButtonSubvariant.Tonal}
+            class="button-contact-us-mobile"
+          >
+            <a
+              href={getNavUrl(PAGES.CONTACT)}
+              class:list={{ 'active-link': isActive(PAGES.CONTACT) }}
+              >{t(TRANSLATION_KEYS.NAV_CONTACT)}</a
+            >
+          </Button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  @import './Navbar.css';
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('hamburger-menu');
+    const menuOpen = document.getElementById('hamburger-icon-open');
+    const menuClose = document.getElementById('hamburger-icon-close');
+    const menuMobile = document.getElementById('menu-mobile-container');
+
+    trigger?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isActive = menuOpen?.classList.toggle('active');
+      console.log(isActive);
+      if (!isActive) {
+        menuClose?.classList.add('active');
+        menuClose?.classList.remove('inactive');
+
+        menuOpen?.classList.add('inactive');
+        menuOpen?.classList.remove('active');
+
+        menuMobile?.style.setProperty('display', 'flex');
+      } else {
+        menuOpen?.classList.add('active');
+        menuOpen?.classList.remove('inactive');
+
+        menuClose?.classList.add('inactive');
+        menuClose?.classList.remove('active');
+
+        menuMobile?.style.setProperty('display', 'none');
+      }
+    });
+  });
+</script>

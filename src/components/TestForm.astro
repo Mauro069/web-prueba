@@ -1,0 +1,97 @@
+---
+import Input from './ui/input/Input.astro';
+import Textarea from './ui/textarea/Textarea.astro';
+import Dropdown from './ui/dropdown/Dropdown.astro';
+import Button from './ui/button/Button.astro';
+
+const roleOptions = [
+  { label: 'CTO / Líder Técnico', value: 'cto' },
+  { label: 'Product Manager', value: 'product_manager' },
+  { label: 'CEO / Fundador(a)', value: 'ceo' },
+  { label: 'Manager de Ingeniería', value: 'engineering_manager' },
+  { label: 'Otro / No listado', value: 'other' },
+];
+---
+
+<form
+  id="loginForm"
+  novalidate
+  class="flex flex-col gap-6 p-8 border rounded-lg shadow-md max-w-md mx-auto my-10 bg-white"
+>
+  <h2 class="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
+
+  <Input
+    label="Correo Electrónico"
+    id="email"
+    name="email"
+    type="email"
+    placeholder="tu@ejemplo.com"
+    required={true}
+    errorMessage="Por favor, introduce un correo electrónico válido."
+  />
+
+  <Input
+    label="Contraseña"
+    id="password"
+    name="password"
+    type="password"
+    placeholder="Introduce tu contraseña"
+    required={true}
+    errorMessage="La contraseña debe tener al menos 6 caracteres."
+  />
+
+  <Dropdown
+    name="role"
+    id="role"
+    label="Selecciona tu rol"
+    placeholder="Por favor, selecciona una opción"
+    options={roleOptions}
+  />
+  <Textarea
+    label="Comentarios o preguntas"
+    id="comments"
+    name="comments"
+    placeholder="Introduce tu mensaje aquí..."
+    required={true}
+    errorMessage="Por favor, introduce tu consulta o comentario."
+  />
+  <Button type="submit"> Entrar </Button>
+</form>
+<script is:inline type="module" src="/src/scripts/formValidator.ts"></script>
+<script is:inline type="module">
+  import {
+    validateField,
+    updateUI,
+  } from '/src/components/ui/utils/formFieldUtils.ts';
+
+  const form = document.getElementById('loginForm');
+  const formFields = form.querySelectorAll('input, textarea');
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    let formIsValid = true;
+    formFields.forEach((field) => {
+      const fieldState = {
+        value: field.value,
+        touched: true,
+        error: false,
+      };
+
+      const hasError = validateField(field);
+
+      updateUI(field, fieldState, hasError);
+
+      if (hasError) {
+        formIsValid = false;
+      }
+    });
+
+    if (formIsValid) {
+      alert('¡Formulario enviado con éxito!');
+      form.reset();
+    } else {
+      alert('Por favor, corrige los errores en el formulario.');
+    }
+  });
+</script>

@@ -1,0 +1,20 @@
+.input-error-space {
+  min-height: 1.25em;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.input-error-space.is-visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.field-container input:-webkit-autofill,
+.field-container input:-webkit-autofill:hover,
+.field-container input:-webkit-autofill:focus,
+.field-container input:-webkit-autofill:active {
+  box-shadow: 0 0 0px 1000px var(--color-base-white) inset !important;
+  -webkit-text-fill-color: var(--color-base-black) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

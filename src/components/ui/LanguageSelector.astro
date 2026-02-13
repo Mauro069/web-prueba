@@ -1,0 +1,92 @@
+---
+import {
+  getAvailableLocales,
+  getLocaleFromUrl,
+  createTranslator,
+} from '../../i18n/utils.js';
+import {
+  TRANSLATION_KEYS,
+  LANGUAGE_NAMES,
+  DEFAULT_LOCALE,
+  AVAILABLE_LOCALES,
+  type Locale,
+} from '../../constants/index.js';
+
+const currentLocale = getLocaleFromUrl(Astro.url) as Locale;
+const t = createTranslator(currentLocale);
+const locales = getAvailableLocales();
+
+// Usar los nombres de idiomas desde las constantes
+const languageNames = LANGUAGE_NAMES[currentLocale];
+const ariaLabel = (() => {
+  const v = t(TRANSLATION_KEYS.LANGUAGE_SELECTOR);
+  return typeof v === 'string' ? v : String(v ?? '');
+})();
+---
+
+<div class="relative inline-block">
+  <select
+    id="language-selector"
+    class="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+    aria-label={ariaLabel}
+  >
+    {
+      locales.map((locale) => (
+        <option value={locale} selected={locale === currentLocale}>
+          {languageNames[locale as Locale]}
+        </option>
+      ))
+    }
+  </select>
+</div>
+
+<script define:vars={{ AVAILABLE_LOCALES, DEFAULT_LOCALE }}>
+  function initLanguageSelector() {
+    const selector = document.getElementById('language-selector');
+
+    if (selector) {
+      selector.addEventListener('change', (event) => {
+        const target = event.target;
+        const newLocale = target.value;
+        const currentUrl = window.location.href;
+
+        // Función para cambiar idioma del lado cliente
+        function changeLocaleClient(currentUrl, newLocale) {
+          const url = new URL(currentUrl);
+          const pathSegments = url.pathname.split('/').filter(Boolean);
+
+          // Detectar idioma actual en la URL usando las constantes disponibles
+          const possibleLocales = AVAILABLE_LOCALES;
+          let currentLocale = DEFAULT_LOCALE; // default
+
+          if (
+            pathSegments.length > 0 &&
+            possibleLocales.includes(pathSegments[0])
+          ) {
+            currentLocale = pathSegments[0];
+            pathSegments.shift(); // remover el idioma actual
+          }
+
+          // Construir nueva URL
+          const pathWithoutLocale = '/' + pathSegments.join('/');
+
+          if (newLocale === DEFAULT_LOCALE) {
+            return url.origin + pathWithoutLocale;
+          }
+
+          return url.origin + '/' + newLocale + pathWithoutLocale;
+        }
+
+        const newUrl = changeLocaleClient(currentUrl, newLocale);
+        window.location.href = newUrl;
+      });
+    }
+  }
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguageSelector);
+  } else {
+    initLanguageSelector();
+  }
+</script>

@@ -1,0 +1,64 @@
+---
+/**
+ * Template base para páginas
+ * 
+ * Instrucciones:
+ * 1. Copia este archivo a src/components/pages/
+ * 2. Renómbralo según tu página (ej: Services.astro)
+ * 3. Actualiza las claves de traducción
+ * 4. Agrega tu contenido específico
+ * 
+ * @example
+ * // Para crear página "Services":
+ * 1. Copiar a src/components/pages/Services.astro
+ * 2. Cambiar TEMPLATE por SERVICES en las claves
+ * 3. Actualizar clase CSS de template-page a services-page
+ */
+import { getLocaleFromUrl, createTranslator } from '../../i18n/utils.js';
+import { TRANSLATION_KEYS } from '../../constants/index.js';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+---
+
+<section class="template-page">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Header de la página -->
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        {/* Reemplaza TEMPLATE_TITLE con tu clave de traducción */}
+        Tu Título Aquí
+      </h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        {/* Reemplaza TEMPLATE_DESCRIPTION con tu clave de traducción */}
+        Tu descripción aquí
+      </p>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main class="template-content">
+      <!-- Tu contenido aquí -->
+      <slot />
+      
+      <!-- Ejemplo de sección -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+          Sección de Ejemplo
+        </h2>
+        <p class="text-gray-600">
+          Aquí puedes agregar tu contenido específico.
+        </p>
+      </section>
+    </main>
+  </div>
+</section>
+
+<style>
+  .template-page {
+    /* Estilos específicos de la página si son necesarios */
+  }
+  
+  .template-content {
+    /* Estilos del contenido */
+  }
+</style> 

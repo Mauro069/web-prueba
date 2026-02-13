@@ -1,0 +1,87 @@
+---
+import Button from "../../ui/button/Button.astro";
+import OrbitsHero from "../../../assets/welcome-svg/hero-section-svg/orbits-hero-section.svg";
+import Ellipse46 from "../../../assets/welcome-svg/hero-section-svg/ellipse-46.svg";
+import Ellipse45 from "../../../assets/welcome-svg/hero-section-svg/ellipse-45.svg";
+import { TRANSLATION_KEYS } from "../../../constants";
+import { getLocaleFromUrl, createTranslator } from "../../../i18n/utils.js";
+import { ButtonSubvariant, ButtonVariant } from "../../ui/utils/enums";
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+
+const heroMainTitle = t(TRANSLATION_KEYS.WELCOME_HERO_SECTION_TITLE);
+const heroMainTitleParts = heroMainTitle.split(".");
+
+const heroMainSubtitle = t(TRANSLATION_KEYS.WELCOME_HERO_SECTION_SUBTITLE);
+const heroMainButton = t(TRANSLATION_KEYS.WELCOME_HERO_SECTION_BTN_TEXT);
+
+const bannerDescription = t(
+  TRANSLATION_KEYS.WELCOME_HERO_SECTION_BANNER_DESCRIPTION
+);
+const bannerButton = t(TRANSLATION_KEYS.WELCOME_HERO_BANNER_BTN_TEXT);
+---
+
+<section class="hero-container">
+  <div>
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="/World-Spining.mp4" type="video/mp4" />
+    </video>
+    <div>
+      <OrbitsHero class="hero-orbits hidden md:flex " />
+      <Ellipse45 class="ellipse-45 hidden md:flex" />
+      <Ellipse46 class="ellipse-46 hidden md:flex" />
+    </div>
+  </div>
+  <div class="hero-text-container">
+    <h1 class="hero-title text-center">
+      {heroMainTitleParts[0]}<span
+        class="rounded-full w-3 h-3 inline-block bg-[var(--color-base-white)] ml-1"
+      ></span>
+      <span class="hero-title--highlight">
+        {heroMainTitleParts[1]}<span
+          class="rounded-full w-3 h-3 inline-block ml-2 bg-[var(--color-main-blue-400)]"
+        ></span>
+      </span>
+      <br />
+      {heroMainTitleParts[2].replace("core", "")}
+      <span class="hero-title--core">
+        core<span
+          class="rounded-full w-3 h-3 inline-block ml-2 bg-[var(--color-electric-blue-500)]"
+        ></span>
+      </span>
+    </h1>
+
+    <p
+      class="text-[var(--color-base-white)] text-center font-extrabold text-[18px]"
+    >
+      {heroMainSubtitle}
+    </p>
+    <Button
+      class="w-[205px] bg-linear-to-r from-[var(--color-electric-blue-100)] to-[var(--color-base-white)] button-consultation-hero"
+      variant={ButtonVariant.Primary}
+      subvariant={ButtonSubvariant.Filled}
+    >
+      <a href="">{heroMainButton}</a>
+    </Button>
+  </div>
+  <div class="hero-banner-container w-full">
+    <div class="hero-banner">
+      <p
+        class="font-extrabold size-[22px] w-[420px] h-[26px] text-[var(--color-electric-blue-800)]"
+      >
+        {bannerDescription}
+      </p>
+      <Button
+        variant={ButtonVariant.Tertiary}
+        subvariant={ButtonSubvariant.Text}
+        class="button-hero-banner"
+        ><a class="font-extrabold text-[16px]">{bannerButton}</a>
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  @import "./SectionHero.css";
+</style>

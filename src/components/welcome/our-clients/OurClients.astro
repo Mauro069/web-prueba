@@ -1,0 +1,108 @@
+---
+import { TRANSLATION_KEYS } from "../../../constants";
+import { getLocaleFromUrl, createTranslator } from "../../../i18n/utils.js";
+
+import AdiumSvg from "../../../assets/welcome-svg/our-clients-svg/adium.svg";
+import CodereSvg from "../../../assets/welcome-svg/our-clients-svg/codere.svg";
+import Diagonal2Svg from "../../../assets/welcome-svg/our-clients-svg/diagonal-2.svg";
+import HachSvg from "../../../assets/welcome-svg/our-clients-svg/hach.svg";
+import RealMadridSvg from "../../../assets/welcome-svg/our-clients-svg/real-madrid.svg";
+import RenegadeSvg from "../../../assets/welcome-svg/our-clients-svg/renegade.svg";
+import SpringfieldSvg from "../../../assets/welcome-svg/our-clients-svg/springfield.svg";
+import UniGRSvg from "../../../assets/welcome-svg/our-clients-svg/uni-gerardo-barrios.svg";
+import UnirSvg from "../../../assets/welcome-svg/our-clients-svg/unir.svg";
+import VodafoneSvg from "../../../assets/welcome-svg/our-clients-svg/vodafone.svg";
+import SecuritasSvg from "../../../assets/welcome-svg/our-clients-svg/securitas.svg";
+
+// HOVERED
+import RealMadridHover from "../../../assets/welcome-svg/our-clients-svg/real-madrid-hover.svg";
+import VodafoneHover from "../../../assets/welcome-svg/our-clients-svg/vodafone-hover.svg";
+import UniGBHover from "../../../assets/welcome-svg/our-clients-svg/uni-gb-hover.svg";
+import Diagonal2Hover from "../../../assets/welcome-svg/our-clients-svg/diagonal-2-hover.svg";
+import UnirHover from "../../../assets/welcome-svg/our-clients-svg/unir-hover.svg";
+import SecuritasHover from "../../../assets/welcome-svg/our-clients-svg/securitas-hover.svg";
+import HachHover from "../../../assets/welcome-svg/our-clients-svg/hach-hover.svg";
+import CodereHover from "../../../assets/welcome-svg/our-clients-svg/codere-hover.svg";
+import AdiumHover from "../../../assets/welcome-svg/our-clients-svg/adium-hover.svg";
+import SpringfieldHover from "../../../assets/welcome-svg/our-clients-svg/springfield-hover.svg";
+import RenegadeHover from "../../../assets/welcome-svg/our-clients-svg/renegade-hover.svg";
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+
+const mainTitle = t(TRANSLATION_KEYS.WELCOME_OUR_CLIENTS_MAIN_TITLE);
+const mainSubtitle = t(TRANSLATION_KEYS.WELCOME_OUR_CLIENTS_MAIN_SUBTITLE);
+---
+
+<section class="our-clients-section-container">
+  <div class="our-clients-text-container">
+    <h2 class="our-clients-main-title">{mainTitle}</h2>
+    <p class="our-clients-main-subtitle">{mainSubtitle}</p>
+  </div>
+
+  <div class="our-clients-logos-container">
+    <!-- Columna 1 -->
+    <div class="our-clients-first-column">
+      <div class="logo-hover-card">
+        <RealMadridSvg class="logo-card logo-default" />
+        <RealMadridHover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card" id="featured">
+        <VodafoneSvg class="logo-card logo-default" />
+        <VodafoneHover class="logo-card logo-hover" />
+      </div>
+    </div>
+
+    <!-- Columna 2 -->
+    <div class="our-clients-second-column">
+      <div class="logo-hover-card">
+        <UniGRSvg class="logo-card logo-default" />
+        <UniGBHover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card">
+        <Diagonal2Svg class="logo-card logo-default" />
+        <Diagonal2Hover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card">
+        <UnirSvg class="logo-card logo-default" />
+        <UnirHover class="logo-card logo-hover" />
+      </div>
+    </div>
+
+    <!-- Columna 3 -->
+    <div class="our-clients-third-column">
+      <div class="logo-hover-card">
+        <SecuritasSvg class="logo-card logo-default" />
+        <SecuritasHover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card">
+        <HachSvg class="logo-card logo-default" />
+        <HachHover class="logo-card logo-hover" />
+      </div>
+    </div>
+
+    <!-- Columna 4 -->
+    <div class="our-clients-fourth-column">
+      <div class="logo-hover-card">
+        <CodereSvg class="logo-card logo-default" />
+        <CodereHover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card">
+        <AdiumSvg class="logo-card logo-default" />
+        <AdiumHover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card">
+        <SpringfieldSvg class="logo-card logo-default" />
+        <SpringfieldHover class="logo-card logo-hover" />
+      </div>
+      <div class="logo-hover-card">
+        <RenegadeSvg class="logo-card logo-default" />
+        <RenegadeHover class="logo-card logo-hover" />
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @import "./OurClients.css";
+  </style>
+</section>

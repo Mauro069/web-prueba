@@ -1,0 +1,62 @@
+---
+export interface Props {
+  label: string;
+  id: string;
+  name: string;
+  type?: 'text' | 'email' | 'password' | 'number';
+  placeholder?: string;
+  value?: string;
+  required?: boolean;
+  errorMessage?: string;
+  class?: string;
+}
+
+const {
+  label,
+  id,
+  name,
+  type = 'text',
+  placeholder = '',
+  value = '',
+  required = false,
+  errorMessage = '',
+  class: className = '',
+} = Astro.props;
+
+import {
+  baseFieldClasses,
+  baseLabelClasses,
+  staticBorderClass,
+  regularText,
+} from '../utils/formFieldUtils';
+---
+
+<div class={`flex flex-col gap-[5px] items-start field-container ${className}`}>
+  <label for={id} class:list={[baseLabelClasses, regularText]}>
+    {label}
+    {required && <span class="text-[var(--color-red-500)]">*</span>}
+  </label>
+  <input
+    id={id}
+    name={name}
+    type={type}
+    placeholder={placeholder}
+    value={value}
+    required={required}
+    class:list={[baseFieldClasses, staticBorderClass]}
+    aria-invalid="false"
+    data-invalid="false"
+    aria-describedby={`${id}-error-message`}
+  />
+
+  <p
+    id={`${id}-error-message`}
+    class="input-error-space text-red-500 text-[16px] mt-1"
+  >
+    {errorMessage}
+  </p>
+</div>
+
+<style>
+  @import './Input.css';
+</style>

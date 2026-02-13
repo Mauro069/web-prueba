@@ -1,0 +1,50 @@
+---
+import { getLocaleFromUrl, createTranslator } from '../../i18n/utils.js';
+import { TRANSLATION_KEYS } from '../../constants/index.js';
+import TestForm from '../TestForm.astro';
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+---
+
+<div class="max-w-4xl mx-auto">
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">
+      {t(TRANSLATION_KEYS.ABOUT_TITLE)}
+    </h1>
+    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+      {t(TRANSLATION_KEYS.ABOUT_DESCRIPTION)}
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <div class="bg-white p-6 rounded-lg shadow-sm border">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+        💡 {t(TRANSLATION_KEYS.ABOUT_MISSION)}
+      </h2>
+      <p class="text-gray-600 leading-relaxed">
+        {t(TRANSLATION_KEYS.ABOUT_MISSION)}
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-sm border">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+        🎯 {t(TRANSLATION_KEYS.ABOUT_VALUES)}
+      </h2>
+      <p class="text-gray-600 leading-relaxed">
+        {t(TRANSLATION_KEYS.ABOUT_VALUES)}
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-12 text-center">
+    <div class="bg-blue-50 p-8 rounded-lg">
+      <h3 class="text-2xl font-semibold text-blue-900 mb-4">
+        🚀 Codescript Web
+      </h3>
+      <p class="text-blue-700">
+        {t(TRANSLATION_KEYS.WELCOME_DESCRIPTION)}
+      </p>
+    </div>
+    <TestForm />
+  </div>
+</div>

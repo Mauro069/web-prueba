@@ -1,0 +1,51 @@
+---
+import { CardVariant } from '../utils/enums.ts';
+
+export interface Props {
+  variant?: CardVariant;
+  clickable?: boolean;
+  href?: string;
+  class?: string;
+}
+
+const {
+  variant = CardVariant.Shadow,
+  clickable = false,
+  href,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const interactiveClasses =
+  clickable || href
+    ? 'transition-transform hover:scale-105 cursor-pointer'
+    : '';
+
+const Tag = href ? 'a' : 'div';
+---
+
+{
+  variant === CardVariant.Special ? (
+    <Tag
+      class={`card card--${variant} ${interactiveClasses} ${className}`}
+      href={href}
+      {...rest}
+    >
+      <div class="card-content">
+        <slot />
+      </div>
+    </Tag>
+  ) : (
+    <Tag
+      class={`card card--${variant} ${interactiveClasses} ${className}`}
+      href={href}
+      {...rest}
+    >
+      <slot />
+    </Tag>
+  )
+}
+
+<style>
+  @import './Card.css';
+</style>

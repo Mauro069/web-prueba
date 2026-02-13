@@ -1,0 +1,218 @@
+---
+import { getLocaleFromUrl, createTranslator } from '../../i18n/utils.js';
+import { TRANSLATION_KEYS, DEFAULT_LOCALE, type Locale } from '../../constants/index.js';
+import { getPostBySlug } from '../../data/blog';
+
+export interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const currentLocale = getLocaleFromUrl(Astro.url) as Locale;
+const t = createTranslator(currentLocale);
+const post = getPostBySlug(slug, currentLocale);
+
+// Si no existe el post, mostrar error
+if (!post) {
+  throw new Error(`Post no encontrado: ${slug}`);
+}
+
+// Generar URL de regreso al blog
+const getBlogUrl = () => {
+  if (currentLocale === DEFAULT_LOCALE) {
+    return '/blog';
+  } else {
+    return `/${currentLocale}/blog`;
+  }
+};
+
+// Formatear fecha según el idioma
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const localeMap = {
+    'es': 'es-ES',
+    'en': 'en-US', 
+    'fr': 'fr-FR',
+    'pt': 'pt-BR'
+  };
+  
+  return date.toLocaleDateString(localeMap[currentLocale] || 'es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+---
+
+<div class="max-w-4xl mx-auto">
+  <!-- Breadcrumb -->
+  <nav class="mb-8">
+    <a 
+      href={getBlogUrl()}
+      class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
+    >
+      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      {t(TRANSLATION_KEYS.BLOG_BACK_TO_LIST)}
+    </a>
+  </nav>
+
+  <!-- Artículo -->
+  <article class="bg-white rounded-lg shadow-sm border overflow-hidden">
+    <!-- Header del artículo -->
+    <div class="p-8 border-b border-gray-100">
+      <div class="mb-6">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+          {post.title}
+        </h1>
+        
+        <p class="text-xl text-gray-600 leading-relaxed">
+          {post.excerpt}
+        </p>
+      </div>
+      
+      <!-- Metadatos -->
+      <div class="flex flex-wrap items-center gap-6 text-sm text-gray-500">
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span>{t(TRANSLATION_KEYS.BLOG_PUBLISHED_ON)} {formatDate(post.publishedDate)}</span>
+        </div>
+        
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>{post.readingTime} min</span>
+        </div>
+        
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <span>{post.author}</span>
+        </div>
+      </div>
+      
+      <!-- Tags -->
+      <div class="mt-6">
+        <div class="flex flex-wrap gap-2">
+          {post.tags.map((tag) => (
+            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido del artículo -->
+    <div class="p-8">
+      <div 
+        class="blog-content text-gray-700 leading-relaxed"
+        set:html={post.content.replace(/\n/g, '<br/>')}
+      >
+      </div>
+    </div>
+  </article>
+
+  <!-- Navegación al final -->
+  <div class="mt-8 text-center">
+    <a 
+      href={getBlogUrl()}
+      class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+    >
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      {t(TRANSLATION_KEYS.BLOG_BACK_TO_LIST)}
+    </a>
+  </div>
+</div>
+
+<!-- Estilos para el contenido del blog -->
+<style>
+  .blog-content h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .blog-content h1:first-child {
+    margin-top: 0;
+  }
+  
+  .blog-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .blog-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .blog-content ul,
+  .blog-content ol {
+    margin: 1rem 0;
+    margin-left: 1.5rem;
+  }
+  
+  .blog-content li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .blog-content pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .blog-content code:not(pre code) {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .blog-content p {
+    margin-bottom: 1rem;
+  }
+  
+  .blog-content a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+  
+  .blog-content a:hover {
+    color: #1d4ed8;
+  }
+  
+  .blog-content strong {
+    font-weight: bold;
+    color: #1f2937;
+  }
+  
+  .blog-content blockquote {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+  }
+</style> 

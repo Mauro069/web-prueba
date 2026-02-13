@@ -1,0 +1,79 @@
+---
+/**
+ * Template base para componentes UI
+ * 
+ * Instrucciones:
+ * 1. Copia este archivo a src/components/ui/
+ * 2. Renómbralo según tu componente (ej: Button.astro)
+ * 3. Define las props específicas
+ * 4. Actualiza las clases y estilos
+ * 
+ * @example
+ * // Para crear componente "Alert":
+ * 1. Copiar a src/components/ui/Alert.astro
+ * 2. Cambiar Props según necesidades
+ * 3. Actualizar variantes y estilos
+ */
+export interface Props {
+  /** Variante visual del componente */
+  variant?: 'default' | 'primary' | 'secondary';
+  /** Tamaño del componente */
+  size?: 'sm' | 'md' | 'lg';
+  /** Estado deshabilitado */
+  disabled?: boolean;
+  /** Clases CSS adicionales */
+  class?: string;
+}
+
+const { 
+  variant = 'default',
+  size = 'md',
+  disabled = false,
+  class: className = '',
+  ...rest 
+} = Astro.props;
+
+// Clases base del componente
+const baseClasses = 'component-template';
+
+// Clases por variante
+const variantClasses = {
+  default: 'bg-gray-100 text-gray-800',
+  primary: 'bg-blue-100 text-blue-800',
+  secondary: 'bg-green-100 text-green-800'
+};
+
+// Clases por tamaño
+const sizeClasses = {
+  sm: 'px-2 py-1 text-sm',
+  md: 'px-4 py-2 text-base',
+  lg: 'px-6 py-3 text-lg'
+};
+
+// Combinar todas las clases
+const classes = [
+  baseClasses,
+  variantClasses[variant],
+  sizeClasses[size],
+  disabled && 'opacity-50 cursor-not-allowed',
+  className
+].filter(Boolean).join(' ');
+---
+
+<div class={classes} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .component-template {
+    /* Estilos base */
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+  }
+  
+  .component-template:hover:not(.opacity-50) {
+    /* Efecto hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+</style> 

@@ -1,0 +1,73 @@
+---
+import CircleButton from '/src/assets/icons/circle-button.svg';
+import SquareButton from '/src/assets/icons/square-button.svg';
+import ChevronRightButton from '/src/assets/icons/chevron-right-button.svg';
+import { ButtonVariant, ButtonSubvariant, ButtonType } from '../utils/enums';
+import { type ButtonVariantProps } from '../utils/enums';
+
+export type Props = ButtonVariantProps & {
+  disabled?: boolean;
+  href?: string;
+  type?: ButtonType;
+  ariaLabel?: string;
+  class?: string;
+  id?: string;
+};
+
+const {
+  variant = ButtonVariant.Primary,
+  subvariant = ButtonSubvariant.Filled,
+  disabled = false,
+  href,
+  type = ButtonType.Button,
+  ariaLabel,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+
+const isTertiaryAndText =
+  variant === ButtonVariant.Tertiary && subvariant === ButtonSubvariant.Text;
+const isTertiaryAndCircle =
+  variant === ButtonVariant.Tertiary &&
+  subvariant === ButtonSubvariant.IconCircle;
+const isTertiaryAndSquare =
+  variant === ButtonVariant.Tertiary &&
+  subvariant === ButtonSubvariant.IconSquare;
+const iconWrapperClass =
+  isTertiaryAndCircle || isTertiaryAndSquare
+    ? 'inline-flex items-center justify-center p-0 w-[45px] h-[45px] md:w-[50px] md:h-[50px]'
+    : '';
+---
+
+<Tag
+  class={`btn btn--${variant} 
+  ${subvariant ? `btn--${variant}-${subvariant}` : ''} 
+  ${disabled ? 'btn--disabled' : ''} ${iconWrapperClass} 
+  ${variant !== ButtonVariant.Tertiary ? 'w-full h-[45px] text-[14px] md:w-auto md:h-[50px] md:text-[16px]' : ''}
+  ${className}`}
+  href={href}
+  type={!href ? type : undefined}
+  disabled={!href ? disabled : undefined}
+  aria-disabled={href && disabled ? 'true' : undefined}
+  aria-label={ariaLabel}
+  {...rest}
+>
+  {
+    isTertiaryAndCircle && (
+      <CircleButton class="w-[45px] h-[45px] md:w-[50px] md:h-[50px] btn__icon" />
+    )
+  }
+  {
+    isTertiaryAndSquare && (
+      <SquareButton class="w-[45px] h-[45px] md:w-[50px] md:h-[50px] btn__icon" />
+    )
+  }
+  <slot />
+  {isTertiaryAndText && <ChevronRightButton class="btn__icon--right" />}
+</Tag>
+
+<style>
+  @import './button.css';
+</style>

@@ -1,0 +1,56 @@
+---
+export interface Props {
+  label: string;
+  id: string;
+  name: string;
+  placeholder?: string;
+  value?: string;
+  required?: boolean;
+  errorMessage?: string;
+  class?: string;
+  rows?: number;
+  cols?: number;
+}
+
+const {
+  label,
+  id,
+  name,
+  placeholder = '',
+  value = '',
+  required = false,
+  errorMessage = '',
+  class: className = '',
+  rows = 4,
+  cols,
+} = Astro.props;
+
+import {
+  baseFieldClasses,
+  baseLabelClasses,
+  staticBorderClass,
+  regularText,
+} from '../utils/formFieldUtils';
+---
+
+<div class={`flex flex-col gap-[5px] items-start field-container ${className}`}>
+  <label for={id} class:list={[baseLabelClasses, regularText]}>
+    {label}
+    {required && <span class="text-[var(--color-red-500)]">*</span>}
+  </label>
+  <textarea
+    id={id}
+    name={name}
+    placeholder={placeholder}
+    value={value}
+    rows={rows}
+    required={required}
+    class="h-[160px]"
+    class:list={[baseFieldClasses, staticBorderClass]}
+    aria-invalid="false"
+    data-invalid="false"
+    aria-describedby={`${id}-error-message`}></textarea>
+  <p id={`${id}-error-message`} class="text-red-500 text-xs mt-1 hidden">
+    {errorMessage}
+  </p>
+</div>

@@ -1,0 +1,109 @@
+---
+import ArrowLeft from "../../../assets/icons/arrow-left.svg";
+import ArrowRight from "../../../assets/icons/arrow-right.svg";
+import Button from "../button/Button.astro";
+import { ButtonSubvariant, ButtonVariant } from "../utils/enums";
+
+export interface ButtonsProps {
+  class?: string;
+  slides: string[];
+}
+
+const { class: className = "", slides = [] } = Astro.props;
+---
+
+<section class="p-8 w-full">
+  <div
+    class={`flex flex-col w-full justify-center items-center gap-6 ${className}`}
+  >
+    <div class="flex items-center justify-center overflow-hidden">
+      <div
+        id="slides-container"
+        class="flex transition-transform duration-300 ease-in-out"
+      >
+        {
+          slides.map((slide: string) => (
+            <div class="slide w-full flex-shrink-0 flex items-center justify-center">
+              {slide}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Slider con botones -->
+    <div class="flex gap-10 items-center w-auto overflow-hidden">
+      <Button
+        id="btn-slider-left"
+        class="slider-button"
+        variant={ButtonVariant.Tertiary}
+        subvariant={ButtonSubvariant.Text}
+      >
+        <ArrowLeft />
+      </Button>
+
+      <!-- Indicadores -->
+      <div class="indicators flex gap-4 items-center justify-center">
+        {
+          slides.map((_: string[], index: number) => (
+            <div
+              class={`indicator ${index === 0 ? "active" : ""}`}
+              data-index={index}
+            />
+          ))
+        }
+      </div>
+
+      <Button
+        id="btn-slider-right"
+        class="slider-button"
+        variant={ButtonVariant.Tertiary}
+        subvariant={ButtonSubvariant.Text}
+      >
+        <ArrowRight />
+      </Button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const btnLeft = document.getElementById("btn-slider-left");
+  const btnRight = document.getElementById("btn-slider-right");
+  const slidesContainer = document.getElementById("slides-container");
+  const indicators = document.querySelectorAll(".indicator");
+
+  let currentIndex = 0;
+  const totalSlides = indicators.length;
+
+  function updateIndicators() {
+    indicators.forEach((el, i) => {
+      el.classList.toggle("active", i === currentIndex);
+    });
+  }
+
+  function showSlide(index: number) {
+    if (index < 0) index = totalSlides - 1;
+    if (index >= totalSlides) index = 0;
+    currentIndex = index;
+
+    if (slidesContainer) {
+      slidesContainer.style.transform = `translateX(-${100 * currentIndex}%)`;
+    }
+
+    updateIndicators();
+  }
+
+  btnLeft?.addEventListener("click", () => showSlide(currentIndex - 1));
+  btnRight?.addEventListener("click", () => showSlide(currentIndex + 1));
+
+  indicators.forEach((el) => {
+    const index = parseInt((el as HTMLElement).dataset.index!);
+    el.addEventListener("click", () => showSlide(index));
+  });
+
+  showSlide(currentIndex);
+</script>
+
+<style>
+  @import "../slider/Slider.css";
+</style>

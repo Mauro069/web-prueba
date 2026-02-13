@@ -1,0 +1,105 @@
+---
+import ChevronDownIcon from '../../../assets/icons/chevron-down.svg';
+
+export interface Option {
+  value: string;
+  label: string;
+}
+export interface DropdownProps {
+  label?: string;
+  className?: string;
+  name?: string;
+  id?: string;
+  options?: Option[];
+  errorMessage?: string;
+  required?: boolean;
+  completed?: boolean;
+  placeholder?: string;
+}
+
+const {
+  label = '',
+  className = '',
+  name = '',
+  id = '',
+  options = [],
+  errorMessage = '',
+  required = false,
+  completed = false,
+  placeholder = '',
+} = Astro.props;
+
+import {
+  baseLabelClasses,
+  staticBorderClass,
+  regularText,
+  activeBorderClass,
+} from '../utils/formFieldUtils';
+
+import {
+  dropdownButtonClasses,
+  optionsListClasses,
+  optionItemClasses,
+} from '../utils/dropdown.ts';
+---
+
+<div
+  class=`custom-select-container flex flex-col gap-[5px] items-start field-container ${className}`
+>
+  <label for={id} class:list={[baseLabelClasses, regularText]}>
+    {label}
+    {required && <span class="text-[var(--color-red-500)]">*</span>}
+  </label>
+  <div
+    class={dropdownButtonClasses}
+    data-placeholder-text={placeholder}
+    data-neutral-border-class={staticBorderClass}
+    data-blue-border-class={activeBorderClass}
+    data-placeholder-color="text-[var(--color-neutral-400)]"
+    data-selected-color={regularText}
+    data-completed={completed}
+    tabindex="0"
+  >
+    <span class="placeholder-text"></span>
+    <ChevronDownIcon class="h-6 w-6 transition-transform duration-200" />
+  </div>
+
+  <ul class={optionsListClasses} data-is-open="false">
+    {
+      options.map((option: { value: string; label: string }) => (
+        <li class={optionItemClasses} data-value={option.value}>
+          {option.label}
+        </li>
+      ))
+    }
+  </ul>
+
+  <select
+    name={name}
+    id={id}
+    required={required}
+    autocomplete="off"
+    class="absolute opacity-0 pointer-events-none"
+  >
+    <option value="" disabled selected hidden>
+      {placeholder}
+    </option>
+    {
+      options.map((option: { value: string; label: string }) => (
+        <option value={option.value}>{option.label}</option>
+      ))
+    }
+  </select>
+
+  <p id={`${id}-error-message`} class="text-red-500 text-xs mt-1 hidden">
+    {errorMessage}
+  </p>
+</div>
+
+<script is:inline type="module">
+  import { attachDropdownLogic } from '/src/components/ui/utils/dropdown.ts';
+  const customDropdownContainers = document.querySelectorAll(
+    '.custom-select-container'
+  );
+  customDropdownContainers.forEach(attachDropdownLogic);
+</script>

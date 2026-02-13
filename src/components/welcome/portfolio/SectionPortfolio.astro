@@ -1,0 +1,100 @@
+---
+import Button from '../../ui/button/Button.astro';
+import { ButtonVariant, ButtonSubvariant } from '../../ui/utils/enums.ts';
+import { portfolioItems } from '../../../data/portfolioItems';
+
+import { getLocaleFromUrl, createTranslator } from '../../../i18n/utils.js';
+import { TRANSLATION_KEYS } from '../../../constants/index.js';
+import FormBanner from '../../ui/formBanner/FormBanner.astro';
+import type {
+  CombinedPortfolioItem,
+  PortfolioProject,
+} from '../../../i18n/types';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+
+const rawTranslatedItems = t(TRANSLATION_KEYS.WELCOME_PORTFOLIO_PROJECTS);
+
+const translatedPortfolioItems: PortfolioProject[] = Array.isArray(
+  rawTranslatedItems
+)
+  ? (rawTranslatedItems as PortfolioProject[])
+  : [];
+
+const combinedItems: CombinedPortfolioItem[] = portfolioItems.map(
+  (item, index) => {
+    const translatedItem = translatedPortfolioItems[index];
+    return {
+      ...item,
+      ...(translatedItem || {}),
+    } as CombinedPortfolioItem;
+  }
+);
+
+const portfolioLabel = t(TRANSLATION_KEYS.WELCOME_PORTFOLIO_LABEL);
+const portfolioTitle = t(TRANSLATION_KEYS.WELCOME_PORTFOLIO_TITLE);
+const portfolioSubtitle = t(TRANSLATION_KEYS.WELCOME_PORTFOLIO_SUBTITLE);
+---
+
+<section class="portfolio">
+  <div class="portfolio__header">
+    <span class="portfolio__label">{portfolioLabel}</span>
+    <h2 class="portfolio__title">
+      {portfolioTitle}
+    </h2>
+    <p class="portfolio__subtitle">
+      {portfolioSubtitle}
+    </p>
+  </div>
+
+  <div class="portfolio__cards">
+    {
+      combinedItems.map((item) => {
+        const {
+          image,
+          imageGradient,
+          logo: Logo,
+          title,
+          alt,
+          tags = [],
+        } = item;
+
+        return (
+          <article class="portfolio-card">
+            <div class="portfolio-card__logo">
+              <Logo />
+            </div>
+            <div class="portfolio-card__image">
+              <img class="portfolio-card__img-default" src={image} alt={alt} />
+              <img
+                class="portfolio-card__img-gradient"
+                src={imageGradient}
+                alt={alt}
+              />
+              <Button
+                class="portfolio-card__action"
+                variant={ButtonVariant.Tertiary}
+                subvariant={ButtonSubvariant.IconCircle}
+                href="#"
+              />
+            </div>
+            <div class="portfolio-card__content">
+              <h5 class="portfolio-card__title">{title}</h5>
+              <div class="portfolio-card__tags">
+                {tags.map((tag: string) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+  <FormBanner />
+</section>
+
+<style>
+  @import './SectionPortfolio.css';
+</style>

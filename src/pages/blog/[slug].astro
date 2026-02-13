@@ -1,0 +1,35 @@
+---
+import BlogPost from '../../components/blog/BlogPost.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getPostSlugs, getPostBySlug } from '../../data/blog.js';
+import { DEFAULT_LOCALE } from '../../constants/index.js';
+
+// Generar rutas estáticas para todos los posts
+export async function getStaticPaths() {
+  const slugs = getPostSlugs();
+  
+  return slugs.map(slug => ({
+    params: { slug },
+    props: { slug }
+  }));
+}
+
+// Obtener props de la URL
+const { slug } = Astro.params;
+
+// Verificar que el post existe
+const post = getPostBySlug(slug, DEFAULT_LOCALE);
+if (!post) {
+  throw new Error(`Post no encontrado: ${slug}`);
+}
+
+// Props para el layout
+const layoutProps = {
+  title: `${post.title} - Blog - Codescript`,
+  description: post.excerpt
+};
+---
+
+<Layout {...layoutProps}>
+  <BlogPost slug={slug} />
+</Layout> 

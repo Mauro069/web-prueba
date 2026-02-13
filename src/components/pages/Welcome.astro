@@ -1,0 +1,16 @@
+---
+import { getLocaleFromUrl, createTranslator } from '../../i18n/utils.js';
+import { TRANSLATION_KEYS } from '../../constants/index.js';
+import SectionHero from '../welcome/hero/SectionHero.astro';
+import OurClients from '../welcome/our-clients/OurClients.astro';
+import SectionPortfolio from '../welcome/portfolio/SectionPortfolio.astro';
+
+const currentLocale = getLocaleFromUrl(Astro.url);
+const t = createTranslator(currentLocale);
+---
+
+<div class="flex w-full flex-col">
+  <SectionHero />
+  <SectionPortfolio />
+  <OurClients />
+</div>

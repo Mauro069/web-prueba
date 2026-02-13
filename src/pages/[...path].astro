@@ -1,0 +1,128 @@
+---
+import Welcome from '../components/pages/Welcome.astro';
+import About from '../components/pages/About.astro';
+import Blog from '../components/blog/Blog.astro';
+import WhatWeDo from '../components/pages/WhatWeDo.astro';
+import Portfolio from '../components/pages/Portfolio.astro';
+import Careers from '../components/pages/Careers.astro';
+import Contact from '../components/pages/Contact.astro';
+import Plus from '../components/pages/Plus.astro';
+import Layout from '../layouts/Layout.astro';
+import { 
+  LOCALES, 
+  DEFAULT_LOCALE, 
+  PAGES, 
+  PAGE_COMPONENTS,
+  PAGE_TO_COMPONENT_MAP,
+  AVAILABLE_PAGES,
+  AVAILABLE_LOCALES,
+  isValidLocale,
+  isValidPage,
+  getPageComponentType,
+  type PagePath,
+  type Locale 
+} from '../constants';
+
+// Esta función genera todas las rutas posibles para todas las páginas e idiomas
+export async function getStaticPaths() {
+  const locales = AVAILABLE_LOCALES;
+  const pages = AVAILABLE_PAGES;
+  
+  const paths = [];
+  
+  // Para cada página, generar rutas para todos los idiomas
+  for (const page of pages) {
+    for (const locale of locales) {
+      if (locale === DEFAULT_LOCALE) {
+        // Idioma por defecto: sin prefijo de idioma
+        if (page === PAGES.HOME) {
+          // Página de inicio: ruta raíz
+          paths.push({ params: { path: undefined } });
+        } else {
+          // Otras páginas: /about, /blog, etc.
+          paths.push({ params: { path: page } });
+        }
+      } else {
+        // Otros idiomas: con prefijo
+        if (page === PAGES.HOME) {
+          // Página de inicio: /en/, /fr/, etc.
+          paths.push({ params: { path: locale } });
+        } else {
+          // Otras páginas: /en/about, /fr/blog, etc.
+          paths.push({ params: { path: `${locale}/${page}` } });
+        }
+      }
+    }
+  }
+  
+  return paths;
+}
+
+// Obtener el path de la URL y analizarlo
+const { path } = Astro.params;
+const pathStr = path || '';
+
+// Determinar idioma y página de la ruta
+let currentLocale: Locale = DEFAULT_LOCALE;
+let currentPage: PagePath = PAGES.HOME;
+
+if (pathStr) {
+  const pathSegments = pathStr.split('/').filter(Boolean);
+  
+  if (pathSegments.length > 0) {
+    // Verificar si el primer segmento es un idioma
+    if (isValidLocale(pathSegments[0])) {
+      currentLocale = pathSegments[0];
+      const possiblePage = pathSegments[1] || PAGES.HOME;
+      currentPage = isValidPage(possiblePage) ? possiblePage : PAGES.HOME;
+    } else {
+      // No hay prefijo de idioma, usar idioma por defecto
+      currentLocale = DEFAULT_LOCALE;
+      const possiblePage = pathSegments[0] || PAGES.HOME;
+      currentPage = isValidPage(possiblePage) ? possiblePage : PAGES.HOME;
+    }
+  }
+}
+
+// Validar que la página existe
+if (currentPage && !isValidPage(currentPage)) {
+  throw new Error(`Página no encontrada: ${currentPage}`);
+}
+
+// Determinar qué componente mostrar
+const pageComponentType = getPageComponentType(currentPage);
+let PageComponent;
+
+switch (pageComponentType) {
+  case PAGE_COMPONENTS.HOME:
+    PageComponent = Welcome;
+    break;
+  case PAGE_COMPONENTS.ABOUT:
+    PageComponent = About;
+    break;
+  case PAGE_COMPONENTS.BLOG:
+    PageComponent = Blog;
+    break;
+  case PAGE_COMPONENTS.WHAT_WE_DO:
+    PageComponent = WhatWeDo;
+    break;
+  case PAGE_COMPONENTS.PORTFOLIO:
+    PageComponent = Portfolio;
+    break;
+  case PAGE_COMPONENTS.CAREERS:
+    PageComponent = Careers;
+    break;
+  case PAGE_COMPONENTS.CONTACT:
+    PageComponent = Contact;
+    break;
+  case PAGE_COMPONENTS.PLUS:
+    PageComponent = Plus;
+    break;
+  default:
+    PageComponent = Welcome;
+}
+---
+
+<Layout>
+  <PageComponent />
+</Layout> 
